@@ -18,11 +18,17 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditAnywhere, Category = "Components")
 		UStaticMeshComponent* MeshComponent;
+	UPROPERTY(EditAnywhere, Category = "Components")
+		AActor* ThisActor;
+	UPROPERTY(EditAnywhere, Category = "Components")
+		FVector CurrentVelocity;
+
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,UPrimitiveComponent* OtherComp);
 };
