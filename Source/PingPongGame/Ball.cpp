@@ -2,6 +2,9 @@
 
 
 #include "Ball.h"
+#include "Components/BoxComponent.h"
+#include "Engine/Engine.h"
+#define MAX_VELOCITY = 1800.f;
 
 // Sets default values
 ABall::ABall()
@@ -11,6 +14,12 @@ ABall::ABall()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComponent;
 	CurrentVelocity = FVector(100.0f, 300.0f, 0.0f);
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	CollisionBox->SetBoxExtent(FVector(32.f,32.f,32.f));
+	CollisionBox->SetCollisionProfileName("Trigger");
+	CollisionBox->AttachTo(RootComponent);
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABall::OnOverlapBegin);
+	//CollisionBox->OnComponentEndOverlap.AddDynamic(this, &ABall::OnOverlapEnd);
 }
 
 // Called when the game starts or when spawned
@@ -26,25 +35,33 @@ void ABall::Tick(float DeltaTime)
 	
 	FVector CurrentLocation = this->GetActorLocation();
 	FVector NewLocation = CurrentLocation + (CurrentVelocity*DeltaTime);
+
+	if ((CurrentVelocity.X + CurrentVelocity.Y + CurrentVelocity.Z) > 1800.f)
+	{
+
+	}
+
 	if (NewLocation.Y < 560 && NewLocation.Y > -560)
 	{
 		this->SetActorLocation(NewLocation);
 	}
 	else 
 		CurrentVelocity.Y *= -1;
-
+	if (NewLocation.X < 880 && NewLocation.X > -880)
+	{
+		this->SetActorLocation(NewLocation);
+	}
+	else
+		CurrentVelocity.X *= -1;
 	
 }
 
-void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,UPrimitiveComponent* OtherComp)
+
+void ABall::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    // При соприкосновении сопоставляемого актера с другим компонентом
+CurrentVelocity.X *= -1;
+}
 
-    if (OtherActor && OtherActor != this)
-    {
-        FVector NewVelocity = CurrentVelocity * -1;
-
-        // Применяем новую скорость мячика
-        CurrentVelocity = NewVelocity;
-    }
+void ABall::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
 }

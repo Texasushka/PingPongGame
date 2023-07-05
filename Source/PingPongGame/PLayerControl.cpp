@@ -3,3 +3,10 @@
 
 #include "PLayerControl.h"
 
+void APLayerControl::MoveUp()
+{
+}
+
+void APLayerControl::MoveDown()
+{
+}

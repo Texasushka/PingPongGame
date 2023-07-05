@@ -29,5 +29,6 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* MeshComponent;
-
+	UPROPERTY(VisibleAnyWhere, BlueprintReadWrite)
+		class UBoxComponent* CollisionBox;
 };

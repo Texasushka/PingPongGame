@@ -2,7 +2,8 @@
 
 
 #include "PlayerPawn.h"
-
+#include "Components/BoxComponent.h"
+#include "Engine/Engine.h"
 // Sets default values
 APlayerPawn::APlayerPawn()
 {
@@ -10,6 +11,10 @@ APlayerPawn::APlayerPawn()
 	PrimaryActorTick.bCanEverTick = true;
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComponent;
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	CollisionBox->SetBoxExtent(FVector(32.f, 32.f, 32.f));
+	CollisionBox->SetCollisionProfileName("Trigger");
+	CollisionBox->AttachTo(RootComponent);
 
 }
 
