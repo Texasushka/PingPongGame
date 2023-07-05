@@ -4,17 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "PLayerControl.generated.h"
+#include "PlayerControl.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PINGPONGGAME_API APLayerControl : public APlayerController
+class PINGPONGGAME_API APlayerControl : public APlayerController
 {
 	GENERATED_BODY()
 	
 	public:
-	void MoveUp();
-	void MoveDown();
+	APlayerControl();
+	virtual void SetupInputComponent() override;
+
+	protected:
+		UFUNCTION()
+		void Move(float Value);
+		UPROPERTY(EditDefaultsOnly, Category = "Pong")
+		float PaddleMovementSpeed = 300.0f;
 };

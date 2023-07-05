@@ -13,7 +13,15 @@ ABall::ABall()
 	PrimaryActorTick.bCanEverTick = true;
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComponent;
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>SphereMesh(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+	MeshComponent->SetStaticMesh(SphereMesh.Object);
+
+	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Game/Materials/Ball_M"));
+	MeshComponent->SetMaterial(0, Material.Object);
+
 	CurrentVelocity = FVector(100.0f, 300.0f, 0.0f);
+
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	CollisionBox->SetBoxExtent(FVector(32.f,32.f,32.f));
 	CollisionBox->SetCollisionProfileName("Trigger");
@@ -41,13 +49,13 @@ void ABall::Tick(float DeltaTime)
 
 	}
 
-	if (NewLocation.Y < 560 && NewLocation.Y > -560)
+	if (NewLocation.Y < 530 && NewLocation.Y > -530)
 	{
 		this->SetActorLocation(NewLocation);
 	}
 	else 
 		CurrentVelocity.Y *= -1;
-	if (NewLocation.X < 880 && NewLocation.X > -880)
+	if (NewLocation.X < 850 && NewLocation.X > -850)
 	{
 		this->SetActorLocation(NewLocation);
 	}
@@ -64,4 +72,14 @@ CurrentVelocity.X *= -1;
 
 void ABall::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+}
+
+void ABall::ResetBall()
+{
+	this->SetActorLocation(FVector(0.f,0.f,0.f));
+}
+
+void ABall::SetInitialVelocity()
+{
+	CurrentVelocity = FVector(0.f,300.f,0.f);
 }

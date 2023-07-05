@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/Pawn.h"
 #include "PlayerPawn.generated.h"
 
@@ -15,20 +16,15 @@ public:
 	// Sets default values for this pawn's properties
 	APlayerPawn();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintCallable, Category = "Pong")
+	void SetPlayerIndex(int32 Index);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* MeshComponent;
-	UPROPERTY(VisibleAnyWhere, BlueprintReadWrite)
-		class UBoxComponent* CollisionBox;
+	UPROPERTY(VisibleAnyWhere)
+	class UBoxComponent* CollisionBox;
+	UPROPERTY(VisibleAnyWhere)
+	UCameraComponent * CameraComponent;
+	int32 PlayerIndex;
 };

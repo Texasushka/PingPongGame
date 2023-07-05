@@ -4,38 +4,37 @@
 #include "PlayerPawn.h"
 #include "Components/BoxComponent.h"
 #include "Engine/Engine.h"
-// Sets default values
+
 APlayerPawn::APlayerPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComponent;
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>CubeMesh(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
+	MeshComponent->SetStaticMesh(CubeMesh.Object);
+	MeshComponent->SetWorldScale3D(FVector(0.25f, 3, 0.25f));
+	MeshComponent->SetRelativeScale3D(FVector(0.25f, 3, 0.25f));
+
+	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Game/Materials/Player_M"));
+	MeshComponent->SetMaterial(0, Material.Object);
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraMain"));
+	CameraComponent->SetRelativeLocation(FVector(0,0,1000.f));
+	CameraComponent->SetRelativeRotation(FRotator(0, -90.f, -90.f));
+
+
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	CollisionBox->SetBoxExtent(FVector(32.f, 32.f, 32.f));
+	CollisionBox->SetBoxExtent(FVector(32.f, 200.f, 32.f));
 	CollisionBox->SetCollisionProfileName("Trigger");
 	CollisionBox->AttachTo(RootComponent);
+	PlayerIndex = 0;
 
 }
 
-// Called when the game starts or when spawned
-void APlayerPawn::BeginPlay()
+void APlayerPawn::SetPlayerIndex(int32 Index)
 {
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void APlayerPawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	PlayerIndex = Index;
 }
 
