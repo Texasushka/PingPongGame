@@ -31,6 +31,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Pong")
         void PlayerScored(int32 PlayerIndex);
 
+    void HandleBallCollision(ABall* Ball, APlayerPawn* PlayerPawn);
+    void MovePlayer1Paddle(float AxisValue);
+    void MovePlayer2Paddle(float AxisValue);
 private:
 
 
@@ -43,6 +46,9 @@ private:
     APlayerPawn* Player1Paddle;
     APlayerPawn* Player2Paddle;
     ABall* Ball;
+
+    protected:
+        virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
 };
 
 

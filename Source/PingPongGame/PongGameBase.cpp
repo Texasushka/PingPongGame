@@ -2,13 +2,17 @@
 
 
 #include "PongGameBase.h"
+#include "Engine.h"
 #include "PlayerPawn.h"
 #include "PlayerControl.h"
 #include "Ball.h"
 
+
+
+
 APongGameBase::APongGameBase()
 {
-    // Установка классов игроков
+    bUseSeamlessTravel = true;
     PlayerControllerClass = APlayerControl::StaticClass();
     DefaultPawnClass = nullptr;
 
@@ -17,11 +21,7 @@ APongGameBase::APongGameBase()
 void APongGameBase::BeginPlay()
 {
     Super::BeginPlay();
-
-    // Создание платформ и мяча
-    //StartGame();
-    SpawnBall();
-    SpawnPaddles();
+    StartGame();
 }
 
 
@@ -39,14 +39,19 @@ void APongGameBase::SpawnPaddles()
 
     FVector Player1Location = FVector(770.f, 0.0f, 40.0f);
     FVector Player2Location = FVector(-770.f, 0.0f, 40.0f);
+    if (GetLocalRole() == ROLE_Authority)
+    {
+        Player1Paddle = GetWorld()->SpawnActor<APlayerPawn>(Player1Location, FRotator::ZeroRotator);
+        Player1Paddle->SetPlayerIndex(1);
+        /*APlayerController* Player1Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+        Player1Controller->Possess(Player1Paddle);*/
 
-    // Создание платформ для игроков
-    Player1Paddle = GetWorld()->SpawnActor<APlayerPawn>(Player1Location, FRotator::ZeroRotator);
-    Player2Paddle = GetWorld()->SpawnActor<APlayerPawn>(Player2Location, FRotator::ZeroRotator);
+        Player2Paddle = GetWorld()->SpawnActor<APlayerPawn>(Player2Location, FRotator::ZeroRotator);
+        Player2Paddle->SetPlayerIndex(2);
+        /*APlayerController* Player2Controller = UGameplayStatics::GetPlayerController(GetWorld(), 1);
+        Player2Controller->Possess(Player2Paddle);*/
+    }
 
-    // Установка начальных параметров платформ
-    Player1Paddle->SetPlayerIndex(1);
-    Player2Paddle->SetPlayerIndex(2);
 }
 
 void APongGameBase::SpawnBall()
@@ -55,13 +60,10 @@ void APongGameBase::SpawnBall()
     FVector BallLocation = FVector(0.0f, 0.0f, 70.0f);
 
     Ball = GetWorld()->SpawnActor<ABall>(BallLocation, FRotator::ZeroRotator);
-
-    //Ball->SetInitialVelocity();
 }
 
 void APongGameBase::PlayerScored(int32 PlayerIndex)
 {
-    // Увеличение счета игрока
     if (PlayerIndex == 1)
     {
         Player1Score++;
@@ -71,15 +73,12 @@ void APongGameBase::PlayerScored(int32 PlayerIndex)
         Player2Score++;
     }
 
-    // Проверка на победу
     if (Player1Score >= WinningScore || Player2Score >= WinningScore)
     {
-        // Обработка победы
         HandleWinningCondition();
     }
     else
     {
-        // Перезапуск мяча после очка
         Ball->ResetBall();
     }
 }
@@ -94,5 +93,19 @@ void APongGameBase::HandleWinningCondition()
     else if (Player2Score >= WinningScore)
     {
         // Игрок 2 победил
+    }
+}
+
+void APongGameBase::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
+{
+    Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
+
+    if (GetNetMode() == NM_Client)
+    {
+        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+        if (PlayerController)
+        {
+            PlayerController->DisableInput(PlayerController);
+        }
     }
 }

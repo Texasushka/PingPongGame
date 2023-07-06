@@ -15,7 +15,8 @@ void APlayerControl::SetupInputComponent()
     Super::SetupInputComponent();
 
     // Привязка действия к движению платформы вверх/вниз
-    InputComponent->BindAxis("P1_Move", this, &APlayerControl::Move);
+    InputComponent->BindAxis("P1_Movement", this, &APlayerControl::Move);
+    InputComponent->BindAxis("P2_Movement", this, &APlayerControl::Move);
 }
 
 void APlayerControl::Move(float Value)
@@ -33,4 +34,9 @@ void APlayerControl::Move(float Value)
             ControlledPaddle->AddMovementInput(MovementDirection);
         }
     }
+}
+
+void APlayerControl::SetPlayerController(APlayerControl* Controller)
+{
+    PlayerController = Controller;
 }

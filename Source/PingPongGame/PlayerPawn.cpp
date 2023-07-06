@@ -21,8 +21,8 @@ APlayerPawn::APlayerPawn()
 	MeshComponent->SetMaterial(0, Material.Object);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraMain"));
-	CameraComponent->SetRelativeLocation(FVector(0,0,1000.f));
-	CameraComponent->SetRelativeRotation(FRotator(0, -90.f, -90.f));
+	CameraComponent->SetRelativeRotation(FRotator(-90.f, 0.f, -90.f));
+	CameraComponent->SetupAttachment(RootComponent);
 
 
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
@@ -36,5 +36,12 @@ APlayerPawn::APlayerPawn()
 void APlayerPawn::SetPlayerIndex(int32 Index)
 {
 	PlayerIndex = Index;
+	if (PlayerIndex == 1)
+	{
+		CameraComponent->SetRelativeLocation(FVector(-3000.f, 0, 5200.f));
+	}
+	else if(PlayerIndex == 2)
+	{
+		CameraComponent->SetRelativeLocation(FVector(3000.f, 0, 5200.f));
+	}
 }
-

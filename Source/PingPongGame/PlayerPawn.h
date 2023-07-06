@@ -27,4 +27,6 @@ private:
 	UPROPERTY(VisibleAnyWhere)
 	UCameraComponent * CameraComponent;
 	int32 PlayerIndex;
+
+
 };

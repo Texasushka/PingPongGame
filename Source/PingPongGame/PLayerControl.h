@@ -17,10 +17,11 @@ class PINGPONGGAME_API APlayerControl : public APlayerController
 	public:
 	APlayerControl();
 	virtual void SetupInputComponent() override;
-
-	protected:
+	void SetPlayerController(APlayerControl* Controller);
 		UFUNCTION()
 		void Move(float Value);
 		UPROPERTY(EditDefaultsOnly, Category = "Pong")
 		float PaddleMovementSpeed = 300.0f;
+		int32 PlayerIndex;
+		APlayerControl* PlayerController;
 };
